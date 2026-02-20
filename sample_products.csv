@@ -1,0 +1,8 @@
+"""Example CSV for product import"""
+
+name,description,price,stock
+Wireless Mouse,Ergonomic wireless mouse with USB receiver,29.99,100
+Mechanical Keyboard,RGB mechanical gaming keyboard,89.99,50
+USB Cable,High-speed USB-C cable 2 meters,12.99,200
+Monitor Stand,Adjustable monitor stand for better posture,34.99,75
+Laptop Bag,Waterproof laptop bag with multiple compartments,49.99,60

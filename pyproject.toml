@@ -1,0 +1,52 @@
+[tool.poetry]
+name = "grade-work"
+version = "0.1.0"
+description = "E-commerce API with Clean Architecture"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.13"
+fastapi = "^0.109.0"
+uvicorn = { version = "^0.27.0", extras = ["standard"] }
+pydantic = "^2.6.0"
+pydantic-settings = "^2.1.0"
+sqlalchemy = { version = "^2.0.25", extras = ["asyncio"] }
+asyncpg = "^0.30.0"
+alembic = "^1.13.0"
+pyjwt = "^2.8.0"
+passlib = { version = "^1.7.4", extras = ["bcrypt"] }
+bcrypt = "4.0.1"
+aiosmtplib = "^3.0.1"
+pillow = "^10.2.0"
+pyyaml = "^6.0.1"
+dishka = "^1.0.0"
+python-multipart = "^0.0.6"
+email-validator = "^2.1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+ruff = "^0.1.0"
+mypy = "^1.8.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
