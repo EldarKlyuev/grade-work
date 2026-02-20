@@ -1,4 +1,8 @@
-"""Repository implementations"""
+"""Реализации репозиториев для работы с базой данных.
+
+Содержит SQL-адаптеры для доменных портов репозиториев.
+Использует SQLAlchemy для взаимодействия с PostgreSQL.
+"""
 
 from uuid import UUID
 

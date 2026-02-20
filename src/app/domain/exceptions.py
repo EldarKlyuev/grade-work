@@ -1,13 +1,27 @@
-"""Domain exceptions"""
+"""Доменные исключения.
+
+Все исключения, специфичные для доменного слоя.
+Представляют нарушения бизнес-правил и инвариантов домена.
+"""
 
 
 class DomainError(Exception):
-    """Base domain exception"""
+    """Базовое доменное исключение.
+    
+    Родительский класс для всех доменных исключений.
+    Позволяет отлавливать любые доменные ошибки единообразно.
+    """
     pass
 
 
 class InvalidEmailError(DomainError):
-    """Invalid email format"""
+    """Некорректный формат email.
+    
+    Выбрасывается при попытке создать Email с невалидным форматом.
+    
+    :param email: Некорректный email адрес
+    :type email: str
+    """
     
     def __init__(self, email: str) -> None:
         self.email = email
@@ -15,7 +29,13 @@ class InvalidEmailError(DomainError):
 
 
 class InvalidPasswordError(DomainError):
-    """Invalid password"""
+    """Некорректный пароль.
+    
+    Выбрасывается при попытке создать Password, не соответствующий требованиям безопасности.
+    
+    :param reason: Причина отклонения пароля
+    :type reason: str
+    """
     
     def __init__(self, reason: str) -> None:
         self.reason = reason
@@ -23,15 +43,28 @@ class InvalidPasswordError(DomainError):
 
 
 class InvalidMoneyError(DomainError):
-    """Invalid money value"""
+    """Некорректное денежное значение.
     
-    def __init__(self, value: float | int) -> None:
+    Выбрасывается при попытке создать отрицательную сумму или
+    выполнить некорректную операцию с Money (например, разные валюты).
+    
+    :param value: Некорректное значение
+    :type value: float | int | str
+    """
+    
+    def __init__(self, value: float | int | str) -> None:
         self.value = value
         super().__init__(f"Invalid money value: {value}")
 
 
 class UserNotFoundError(DomainError):
-    """User not found"""
+    """Пользователь не найден.
+    
+    Выбрасывается при попытке получить несуществующего пользователя.
+    
+    :param identifier: Идентификатор пользователя (ID или email)
+    :type identifier: str
+    """
     
     def __init__(self, identifier: str) -> None:
         self.identifier = identifier
@@ -39,7 +72,13 @@ class UserNotFoundError(DomainError):
 
 
 class ProductNotFoundError(DomainError):
-    """Product not found"""
+    """Товар не найден.
+    
+    Выбрасывается при попытке получить несуществующий товар.
+    
+    :param product_id: ID товара
+    :type product_id: str
+    """
     
     def __init__(self, product_id: str) -> None:
         self.product_id = product_id
@@ -47,7 +86,13 @@ class ProductNotFoundError(DomainError):
 
 
 class CategoryNotFoundError(DomainError):
-    """Category not found"""
+    """Категория не найдена.
+    
+    Выбрасывается при попытке получить несуществующую категорию.
+    
+    :param category_id: ID категории
+    :type category_id: str
+    """
     
     def __init__(self, category_id: str) -> None:
         self.category_id = category_id
@@ -55,7 +100,17 @@ class CategoryNotFoundError(DomainError):
 
 
 class InsufficientStockError(DomainError):
-    """Insufficient stock"""
+    """Недостаточно товара на складе.
+    
+    Выбрасывается при попытке зарезервировать больше товара, чем доступно.
+    
+    :param product_id: ID товара
+    :type product_id: str
+    :param requested: Запрошенное количество
+    :type requested: int
+    :param available: Доступное количество
+    :type available: int
+    """
     
     def __init__(self, product_id: str, requested: int, available: int) -> None:
         self.product_id = product_id
@@ -68,14 +123,23 @@ class InsufficientStockError(DomainError):
 
 
 class InvalidCredentialsError(DomainError):
-    """Invalid credentials"""
+    """Неверные учетные данные.
+    
+    Выбрасывается при неудачной попытке аутентификации.
+    """
     
     def __init__(self) -> None:
         super().__init__("Invalid credentials")
 
 
 class UserAlreadyExistsError(DomainError):
-    """User already exists"""
+    """Пользователь уже существует.
+    
+    Выбрасывается при попытке зарегистрировать пользователя с существующим email.
+    
+    :param email: Email, который уже занят
+    :type email: str
+    """
     
     def __init__(self, email: str) -> None:
         self.email = email
@@ -83,14 +147,20 @@ class UserAlreadyExistsError(DomainError):
 
 
 class InvalidTokenError(DomainError):
-    """Invalid token"""
+    """Некорректный токен.
+    
+    Выбрасывается при попытке использовать невалидный токен.
+    """
     
     def __init__(self) -> None:
         super().__init__("Invalid token")
 
 
 class ExpiredTokenError(DomainError):
-    """Expired token"""
+    """Истек срок действия токена.
+    
+    Выбрасывается при попытке использовать токен с истекшим сроком.
+    """
     
     def __init__(self) -> None:
         super().__init__("Token has expired")

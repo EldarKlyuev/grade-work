@@ -1,4 +1,9 @@
-"""Interactors - Command handlers (CQRS)"""
+"""Интеракторы - обработчики команд (CQRS).
+
+Этот модуль содержит команды (Command handlers) в паттерне CQRS.
+Каждый интерактор представляет одну бизнес-операцию и оркеструет
+взаимодействие между доменными объектами и портами.
+"""
 
 import secrets
 from datetime import datetime, timedelta
@@ -40,7 +45,21 @@ from src.app.infrastructure.utils.csv_importer import products_from_csv_generato
 
 
 class RegisterUserInteractor:
-    """Register user interactor"""
+    """Интерактор регистрации пользователя.
+    
+    Обрабатывает регистрацию нового пользователя в системе.
+    Проверяет уникальность email, хеширует пароль и отправляет
+    приветственное письмо.
+    
+    :param user_repository: Репозиторий пользователей
+    :type user_repository: UserRepositoryPort
+    :param password_hasher: Сервис хеширования паролей
+    :type password_hasher: PasswordHasherPort
+    :param email_gateway: Сервис отправки email
+    :type email_gateway: EmailGatewayPort
+    :param uow: Unit of Work для управления транзакцией
+    :type uow: UnitOfWorkPort
+    """
     
     def __init__(
         self,
@@ -55,7 +74,25 @@ class RegisterUserInteractor:
         self.uow = uow
     
     async def __call__(self, data: RegisterUserDTO) -> UUID:
-        """Register a new user"""
+        """Зарегистрировать нового пользователя.
+        
+        :param data: DTO с данными регистрации
+        :type data: RegisterUserDTO
+        :return: ID созданного пользователя
+        :rtype: UUID
+        :raises UserAlreadyExistsError: Если email уже занят
+        :raises InvalidEmailError: Если формат email некорректен
+        :raises InvalidPasswordError: Если пароль не соответствует требованиям
+        
+        :example:
+        
+        >>> dto = RegisterUserDTO(
+        ...     email="user@example.com",
+        ...     password="SecurePass123!",
+        ...     username="john_doe"
+        ... )
+        >>> user_id = await interactor(dto)
+        """
         email = Email(data.email)
         
         if await self.user_repository.exists_by_email(email):
@@ -82,7 +119,10 @@ class RegisterUserInteractor:
 
 
 class LoginUserInteractor:
-    """Login user interactor"""
+    """Интерактор входа в систему.
+    
+    Аутентифицирует пользователя и возвращает JWT токен.
+    """
     
     def __init__(
         self,
@@ -95,7 +135,14 @@ class LoginUserInteractor:
         self.token_service = token_service
     
     async def __call__(self, data: LoginUserDTO) -> str:
-        """Login user and return JWT token"""
+        """Аутентифицировать пользователя и вернуть токен.
+        
+        :param data: DTO с учетными данными
+        :type data: LoginUserDTO
+        :return: JWT токен доступа
+        :rtype: str
+        :raises InvalidCredentialsError: Если учетные данные неверны
+        """
         email = Email(data.email)
         user = await self.user_repository.find_by_email(email)
         
@@ -248,7 +295,11 @@ class RemoveFromCartInteractor:
 
 
 class CreateOrderInteractor:
-    """Create order interactor"""
+    """Интерактор создания заказа.
+    
+    Создает заказ из корзины пользователя, резервирует товары
+    и очищает корзину.
+    """
     
     def __init__(
         self,
@@ -263,7 +314,16 @@ class CreateOrderInteractor:
         self.uow = uow
     
     async def __call__(self, data: CreateOrderDTO) -> UUID:
-        """Create order from cart"""
+        """Создать заказ из корзины пользователя.
+        
+        :param data: DTO с ID пользователя
+        :type data: CreateOrderDTO
+        :return: ID созданного заказа
+        :rtype: UUID
+        :raises ValueError: Если корзина пуста
+        :raises ProductNotFoundError: Если товар не найден
+        :raises InsufficientStockError: Если товара недостаточно на складе
+        """
         cart = await self.cart_repository.find_by_user_id(data.user_id)
         if not cart or not cart.items:
             raise ValueError("Cart is empty")

@@ -1,13 +1,17 @@
-"""Application ports - gateway interfaces"""
+"""Порты уровня приложения - интерфейсы шлюзов.
+
+Определяет контракты для внешних сервисов, используемых в интеракторах.
+Реализации находятся в инфраструктурном слое.
+"""
 
 from typing import Protocol
 
 
 class EmailGatewayPort(Protocol):
-    """Email gateway port"""
+    """Интерфейс шлюза для отправки email."""
     
     async def send_registration_email(self, to: str, username: str) -> None:
-        """Send registration email"""
+        """Отправить приветственное письмо при регистрации."""
         ...
     
     async def send_password_reset_email(
@@ -16,12 +20,12 @@ class EmailGatewayPort(Protocol):
         username: str,
         reset_token: str,
     ) -> None:
-        """Send password reset email"""
+        """Отправить письмо для сброса пароля."""
         ...
 
 
 class ImageProcessingPort(Protocol):
-    """Image processing port"""
+    """Интерфейс для обработки изображений."""
     
     def resize_image(
         self,
@@ -30,33 +34,33 @@ class ImageProcessingPort(Protocol):
         height: int,
         maintain_aspect_ratio: bool = True,
     ) -> bytes:
-        """Resize image"""
+        """Изменить размер изображения."""
         ...
 
 
 class TokenServicePort(Protocol):
-    """Token service port"""
+    """Интерфейс сервиса JWT токенов."""
     
     def create_access_token(self, subject: str) -> str:
-        """Create access token"""
+        """Создать токен доступа."""
         ...
     
     def decode_token(self, token: str) -> dict:
-        """Decode token"""
+        """Декодировать токен."""
         ...
     
     def get_subject(self, token: str) -> str:
-        """Get subject from token"""
+        """Получить subject (ID пользователя) из токена."""
         ...
 
 
 class PasswordHasherPort(Protocol):
-    """Password hasher port"""
+    """Интерфейс сервиса хеширования паролей."""
     
     def hash_password(self, password: str) -> str:
-        """Hash password"""
+        """Хешировать пароль."""
         ...
     
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
-        """Verify password"""
+        """Проверить соответствие пароля хешу."""
         ...

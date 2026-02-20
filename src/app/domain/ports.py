@@ -1,4 +1,8 @@
-"""Domain ports - interfaces for external dependencies"""
+"""Доменные порты - интерфейсы для внешних зависимостей.
+
+Определяет контракты (Protocol) для репозиториев и других внешних сервисов.
+Реализации находятся в инфраструктурном слое.
+"""
 
 from typing import Protocol
 from uuid import UUID
@@ -15,116 +19,145 @@ from src.app.domain.value_objects import Email
 
 
 class UserRepositoryPort(Protocol):
-    """User repository port"""
+    """Интерфейс репозитория пользователей.
+    
+    Определяет контракт для работы с хранилищем пользователей.
+    Реализуется в инфраструктурном слое.
+    """
     
     async def find_by_id(self, user_id: UUID) -> User | None:
-        """Find user by ID"""
+        """Найти пользователя по ID.
+        
+        :param user_id: Уникальный идентификатор пользователя
+        :type user_id: UUID
+        :return: Пользователь или None если не найден
+        :rtype: User | None
+        """
         ...
     
     async def find_by_email(self, email: Email) -> User | None:
-        """Find user by email"""
+        """Найти пользователя по email.
+        
+        :param email: Email пользователя
+        :type email: Email
+        :return: Пользователь или None если не найден
+        :rtype: User | None
+        """
         ...
     
     async def save(self, user: User) -> None:
-        """Save user"""
+        """Сохранить пользователя (создать или обновить).
+        
+        :param user: Сущность пользователя
+        :type user: User
+        """
         ...
     
     async def exists_by_email(self, email: Email) -> bool:
-        """Check if user exists by email"""
+        """Проверить существование пользователя по email.
+        
+        :param email: Email для проверки
+        :type email: Email
+        :return: True если пользователь существует
+        :rtype: bool
+        """
         ...
 
 
 class ProductRepositoryPort(Protocol):
-    """Product repository port"""
+    """Интерфейс репозитория товаров."""
     
     async def find_by_id(self, product_id: UUID) -> Product | None:
-        """Find product by ID"""
+        """Найти товар по ID."""
         ...
     
     async def save(self, product: Product) -> None:
-        """Save product"""
+        """Сохранить товар."""
         ...
     
     async def save_many(self, products: list[Product]) -> None:
-        """Save multiple products"""
+        """Сохранить несколько товаров (пакетная операция)."""
         ...
 
 
 class CategoryRepositoryPort(Protocol):
-    """Category repository port"""
+    """Интерфейс репозитория категорий."""
     
     async def find_by_id(self, category_id: UUID) -> Category | None:
-        """Find category by ID"""
+        """Найти категорию по ID."""
         ...
     
     async def find_by_slug(self, slug: str) -> Category | None:
-        """Find category by slug"""
+        """Найти категорию по slug."""
         ...
     
     async def save(self, category: Category) -> None:
-        """Save category"""
+        """Сохранить категорию."""
         ...
 
 
 class CartRepositoryPort(Protocol):
-    """Cart repository port"""
+    """Интерфейс репозитория корзин."""
     
     async def find_by_user_id(self, user_id: UUID) -> Cart | None:
-        """Find cart by user ID"""
+        """Найти корзину пользователя."""
         ...
     
     async def save(self, cart: Cart) -> None:
-        """Save cart"""
+        """Сохранить корзину."""
         ...
     
     async def delete(self, cart: Cart) -> None:
-        """Delete cart"""
+        """Удалить корзину."""
         ...
 
 
 class OrderRepositoryPort(Protocol):
-    """Order repository port"""
+    """Интерфейс репозитория заказов."""
     
     async def find_by_id(self, order_id: UUID) -> Order | None:
-        """Find order by ID"""
+        """Найти заказ по ID."""
         ...
     
     async def save(self, order: Order) -> None:
-        """Save order"""
+        """Сохранить заказ."""
         ...
 
 
 class PasswordResetTokenRepositoryPort(Protocol):
-    """Password reset token repository port"""
+    """Интерфейс репозитория токенов сброса пароля."""
     
     async def find_by_token(self, token: str) -> PasswordResetToken | None:
-        """Find token by token string"""
+        """Найти токен по строке."""
         ...
     
     async def save(self, token: PasswordResetToken) -> None:
-        """Save token"""
+        """Сохранить токен."""
         ...
 
 
 class UnitOfWorkPort(Protocol):
-    """Unit of work port for transaction management"""
+    """Интерфейс Unit of Work для управления транзакциями.
+    
+    Обеспечивает атомарность операций с несколькими репозиториями.
+    """
     
     async def begin(self) -> None:
-        """Begin transaction"""
+        """Начать транзакцию."""
         ...
     
     async def commit(self) -> None:
-        """Commit transaction"""
+        """Зафиксировать транзакцию."""
         ...
     
     async def rollback(self) -> None:
-        """Rollback transaction"""
+        """Откатить транзакцию."""
         ...
     
     async def __aenter__(self) -> "UnitOfWorkPort":
-        """Enter context manager"""
+        """Войти в контекстный менеджер."""
         ...
     
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
-        """Exit context manager"""
+        """Выйти из контекстного менеджера."""
         ...

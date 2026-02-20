@@ -1,4 +1,9 @@
-"""Query services - Read side (CQRS)"""
+"""Сервисы запросов - сторона чтения (CQRS).
+
+Этот модуль содержит Query Services для паттерна CQRS.
+Query services оптимизированы для чтения и используют read models
+вместо полных доменных сущностей.
+"""
 
 from dataclasses import dataclass
 from datetime import datetime
@@ -24,7 +29,11 @@ from src.app.infrastructure.search import PostgresSearchService
 
 @dataclass
 class ProductReadModel:
-    """Product read model"""
+    """Модель чтения товара.
+    
+    Оптимизированная структура для отображения товара.
+    Содержит денормализованные данные (например, название категории).
+    """
     id: UUID
     name: str
     description: str
@@ -97,7 +106,11 @@ class PaginatedResult:
 
 
 class ListProductsQueryService:
-    """List products query service with pagination"""
+    """Сервис получения списка товаров с пагинацией.
+    
+    Оптимизированный запрос для отображения списка товаров
+    с информацией о категории.
+    """
     
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
@@ -107,7 +120,15 @@ class ListProductsQueryService:
         pagination: PaginationDTO,
         category_id: UUID | None = None,
     ) -> PaginatedResult:
-        """List products with pagination"""
+        """Получить список товаров с пагинацией.
+        
+        :param pagination: Параметры пагинации
+        :type pagination: PaginationDTO
+        :param category_id: Фильтр по категории (опционально)
+        :type category_id: UUID | None
+        :return: Результат с пагинацией
+        :rtype: PaginatedResult
+        """
         page = Pagination(pagination.page, pagination.page_size)
         
         stmt = select(ProductModel, CategoryModel).join(

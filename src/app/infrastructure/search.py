@@ -1,4 +1,8 @@
-"""PostgreSQL full-text search service"""
+"""Сервис полнотекстового поиска PostgreSQL.
+
+Реализация поиска товаров с использованием возможностей
+полнотекстового поиска PostgreSQL (tsvector, tsquery).
+"""
 
 from uuid import UUID
 
@@ -10,7 +14,11 @@ from src.app.infrastructure.persistence.models import ProductModel
 
 
 class PostgresSearchService:
-    """PostgreSQL full-text search implementation"""
+    """Сервис полнотекстового поиска PostgreSQL.
+    
+    Использует встроенные возможности PostgreSQL для быстрого
+    и релевантного поиска по товарам.
+    """
     
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
@@ -20,14 +28,15 @@ class PostgresSearchService:
         query: str,
         pagination: Pagination,
     ) -> tuple[list[ProductModel], int]:
-        """
-        Search products using PostgreSQL full-text search
+        """Поиск товаров с использованием полнотекстового поиска.
         
-        Args:
-            query: Search query string
-            pagination: Pagination parameters
-            
-        Returns:
+        :param query: Поисковый запрос
+        :type query: str
+        :param pagination: Параметры пагинации
+        :type pagination: Pagination
+        :return: Кортеж (список товаров, общее количество)
+        :rtype: tuple[list[ProductModel], int]
+        """
             Tuple of (products list, total count)
         """
         tsquery = func.plainto_tsquery('english', query)
